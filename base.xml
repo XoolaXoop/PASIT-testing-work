@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Categories>
+    <Category Name="Анализаторы"/>
+  </Categories>
+  <Modules>
+    <Module>
+      <Properties>
+        <Property Class="wxPropertyCategory" Name="System" Label="Системные">
+          <Property Class="wxStringProperty" Name="Name" Label="Имя" Help="Отображаемое имя модуля." Value="Модуль"/>
+          <Property Class="wxEnumProperty" Name="Category" Label="Категория" Help="Категория отображения в дереве модулей." Value="Анализаторы"/>
+          <Property Class="wxLongStringProperty" Name="Description" Label="Описание" Help="Расширенное описание модуля." Value="Тестовый модуль"/>
+          <Property Class="wxDateProperty" Name="Version" Label="Версия" Help="Версия модуля (дата релиза)." Value="23.06.20">
+            <Attribute Name="PickerStyle">2</Attribute>
+            <Attribute Name="DateFormat">%y.%m.%d</Attribute>
+          </Property>
+          <Property Class="wxFileProperty" Name="File" Label="Файл" Help="Исполняемый файл модуля." Value="module-exe">
+            <Attribute Name="ShowFullPath">0</Attribute>
+            <Attribute Name="DialogTitle">Выберите исполняемый файл.</Attribute>
+            <Attribute Name="Wildcard">Исполняемые файлы (*)|*</Attribute>
+          </Property>
+        </Property>
+        <Property Class="wxPropertyCategory" Name="Custom" Label="Дополнительные">
+          <Property Class="wxIntProperty" Name="IntName" Label="IntLabel" Value="0">
+            <Attribute Name="Max">10</Attribute>
+            <Attribute Name="Min">-1</Attribute>
+            <Attribute Name="Units">единицы измерения</Attribute>
+            <Attribute Name="InlineHelp">встроенная справка, когда пользователь еще ничего не ввел</Attribute>
+          </Property>
+          <Property Class="wxUIntProperty" Name="UIntName" Label="UIntLabel" Value="0">
+            <Attribute Name="srgConditionVisible">IntName==1</Attribute>
+            <Attribute Name="Units">единицы измерения</Attribute>
+            <Attribute Name="InlineHelp">встроенная справка</Attribute>
+          </Property>
+          <Property Class="wxFloatProperty" Name="FloatName" Label="FloatLabel" Value="0"/>
+          <Property Class="wxStringProperty" Name="StringName" Label="StringLabel"/>
+          <Property Class="wxArrayStringProperty" Name="ArrayStringName" Label="ArrayStringLabel" Value="ping, pong">
+            <Attribute Name="Delimiter">,</Attribute>
+          </Property>
+          <Property Class="wxBoolProperty" Name="BoolName" Label="BoolLabel" Value="0">
+            <Attribute Name="UseCheckbox">1</Attribute>
+          </Property>
+          <Property Class="wxEnumProperty" Name="EnumName" Label="EnumLabel" Value="метка1">
+            <Choices>"метка1"=0x0 "метка2"=0x1</Choices>
+          </Property>
+          <Property Class="wxEditEnumProperty" Name="EditEnumName" Label="EditEnumLabel" Value="52">
+            <Choices>"метка1"=0x0 "метка2"=0x1</Choices>
+          </Property>
+          <Property Class="wxMultiChoiceProperty" Name="MultiChoiceName" Label="MultiChoiceLabel" Value="&quot;метка1&quot; &quot;метка2&quot;">
+            <Choices>"метка1"=0x0 "метка2"=0x1 "метка3"=0x4</Choices>
+          </Property>
+          <Property Class="wxFlagsProperty" Name="FlagsName" Label="FlagsLabel" Value="Flag1, Flag4">
+            <Choices>"Flag1"=0x1 "Flag2"=0x2 "Flag4"=0x4</Choices>
+          </Property>
+          <Property Class="wxDirProperty" Name="DirName" Label="DirLabel"/>
+          <Property Class="wxFileProperty" Name="FileName" Label="FileLabel">
+            <Attribute Name="Wildcard">All files (*)|*</Attribute>
+          </Property>
+        </Property>
+      </Properties>
+    </Module>
+  </Modules>
+</Configuration>
