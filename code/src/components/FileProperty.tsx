@@ -1,14 +1,14 @@
 import React from 'react';
+import {Field, useFormik} from 'formik';
+import {TextField, Paper, InputLabel, FormControl, Typography} from '@mui/material';
 import {FC, ChangeEvent, InputHTMLAttributes} from 'react';
-import {useField} from 'formik';
-
 interface FilePropertyProps {
-  name: string;
-  label: string;
-  wildcard?: string;
-  showFullPath?: boolean;
-  initialPath?: string;
-  dialogTitle?: string;
+  Name: string;
+  Label: string;
+  Wildcard: string;
+  ShowFullPath: string;
+  InitialPath: string;
+  DialogTitle: string;
 }
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
@@ -19,35 +19,42 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   webkitdirectory?: string;
 };
 
-//TODO webkitdirectory={webkitdirectory} исправить https://stackoverflow.com/questions/63809230/reactjs-directory-selection-dialog-not-working
-
 const FileInput: FC<Props> = ({type, id, onChange, accept, webkitdirectory, ...rest}) => {
   return <input type={type} id={id} onChange={onChange} accept={accept} {...rest} />;
 };
 
-export const FileProperty: React.FC<FilePropertyProps> = ({name, label, wildcard, showFullPath, initialPath}) => {
-  const [field, , helpers] = useField({name});
+//TODO webkitdirectory={webkitdirectory} исправить https://stackoverflow.com/questions/63809230/reactjs-directory-selection-dialog-not-working
+
+export const FileProperty: React.FC<FilePropertyProps> = (data: FilePropertyProps) => {
+  let {Name, Label, Wildcard, ShowFullPath, InitialPath} = data;
+  const formik = useFormik({
+    initialValues: {
+      [Name]: '',
+    },
+    onSubmit: () => {},
+  });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      helpers.setValue([file]);
+    const filePath = event.target;
+    console.log('filePath', filePath.value);
+    const filePathString = ShowFullPath == '1' ? filePath.value : filePath.value.split('\\').pop();
+
+    if (filePath) {
+      formik.setFieldValue(Name, filePathString);
     }
   };
 
   return (
-    <div>
-      <label htmlFor={name}>{label}</label>
+    <FormControl sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+      <label htmlFor={Label + Name}>{Label}</label>
       <FileInput
         type='file'
-        id={name}
+        id={Name}
         onChange={handleFileChange}
-        accept={wildcard}
-        webkitdirectory={initialPath ? 'true' : undefined}
+        accept={Wildcard}
+        webkitdirectory={InitialPath ? 'true' : undefined}
       />
-      {field.value?.[0] && (
-        <div>{showFullPath ? field.value?.[0]?.name : field.value?.[0]?.name.split('\\').pop()}</div>
-      )}
-    </div>
+      <Typography sx={{height: '20px', width: '100%'}}>{formik.values[Name]}</Typography>
+    </FormControl>
   );
 };

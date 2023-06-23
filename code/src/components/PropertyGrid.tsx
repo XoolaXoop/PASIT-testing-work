@@ -27,6 +27,10 @@ type PropertyType = {
   Attribute?: NonEmptyObject | Array<NonEmptyObject>;
   Choices?: NonEmptyObject;
   Value?: Array<string> | string;
+  WildCard?: string;
+  ShowFullPath?: string;
+  InitialPath?: string;
+  DialogTitle?: string;
 };
 
 function getComponentFromPropElemData(data: PropertyType) {
@@ -76,13 +80,6 @@ function getComponentFromPropElemData(data: PropertyType) {
         let BoolPropertyValue: '0' | '1' = data.Value;
         return BoolProperty({...data, Value: BoolPropertyValue});
       } else {
-        console.log(
-          data.Attribute &&
-            !Array.isArray(data.Attribute) &&
-            data.Attribute.Name == 'UseCheckbox' &&
-            typeof data.Attribute.text === 'string' &&
-            (data.Value === '0' || data.Value === '1')
-        );
         throw new Error('BoolProperty - не верно переданные данные');
       }
     }
@@ -92,7 +89,6 @@ function getComponentFromPropElemData(data: PropertyType) {
         let EnumPropertyChoices = data.Choices;
         return EnumProperty({...data, Value: EnumPropertyValue, Choices: EnumPropertyChoices});
       } else {
-        console.log(typeof data.Choices, typeof data.Value);
         throw new Error('EnumProperty - не верно переданные данные');
       }
     }
@@ -114,7 +110,25 @@ function getComponentFromPropElemData(data: PropertyType) {
       }
     }
     case 'wxDirProperty': {
-      return null;
+      return DirProperty((str: string) => console.log(str));
+    }
+    case 'wxFileProperty': {
+      console.log(data.Attribute && Array.isArray(data.Attribute), 'FILE');
+      if (data.Attribute && Array.isArray(data.Attribute)) {
+        let ShowFullPathValue: string = data.Attribute[0].text;
+        let DialogTitleValue: string = data.Attribute[1].text;
+        let WildcardValue: string = data.Attribute[2].text;
+        let InitialPathValue: string = data.Attribute[3].text;
+        return FileProperty({
+          ...data,
+          ShowFullPath: ShowFullPathValue,
+          DialogTitle: DialogTitleValue,
+          Wildcard: WildcardValue,
+          InitialPath: InitialPathValue,
+        });
+      } else {
+        throw new Error('wxFileProperty - не верно переданные данные');
+      }
     }
     default:
       return null;

@@ -15,11 +15,12 @@ type EnumPropertyProps = {
 
 export function EnumProperty({Value, Label, Class, Choices, Name}: EnumPropertyProps) {
   const arrayKeyValueChoices = useMemo(() => Object.entries(Choices), [Choices]);
+
   const initialValue = useMemo(
     () => arrayKeyValueChoices[arrayKeyValueChoices.findIndex(([key, _]) => key == Value)][1],
     [Choices]
   );
-  console.log(initialValue);
+
   const formik = useFormik({
     initialValues: {
       [Name]: initialValue,
@@ -41,7 +42,6 @@ export function EnumProperty({Value, Label, Class, Choices, Name}: EnumPropertyP
       label={Label}
       onChange={formik.handleChange}>
       {arrayKeyValueChoices.map(([key, value]) => {
-        console.log(key, value);
         return (
           <MenuItem key={key} value={value}>
             {key}

@@ -14,7 +14,7 @@ export function PropertyCategory(data: PropertyCategoryProps) {
   return (
     <Card sx={{maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '20px', padding: '10px'}}>
       <Typography variant='body1'>{Label}</Typography>
-      <FormGroup sx={{display: 'flex', flexDirection: 'column', gap: '10px'}} id={Name} className={Class}>
+      <FormGroup sx={{display: 'flex', flexDirection: 'column', gap: '20px'}} id={Name} className={Class}>
         {children}
       </FormGroup>
     </Card>
