@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import json from '../../../base2JSON.json';
-import {ReactNode, useMemo} from 'react';
 import {ArrayStringProperty} from './ArrayStringProperty';
 import {BoolProperty} from './BoolProperty';
 import {DirProperty} from './DirProperty';
@@ -15,23 +14,26 @@ import {MultiChoiceProperty} from './MultiChoiceProperty';
 import {PropertyCategory} from './PropertyCategory';
 import {StringProperty} from './StringProperty';
 import {UIntProperty} from './UIntProperty';
+import type {PropertyType} from '../types';
+import type {PropertyCategoryProps} from '../types';
 
-import type {NonEmptyObject} from '../types';
+import {useMemo} from 'react';
 
-type PropertyType = {
-  Property?: Array<PropertyType>;
-  Class: string;
-  Name: string;
-  Label: string;
-  Help?: string;
-  Attribute?: NonEmptyObject | Array<NonEmptyObject>;
-  Choices?: NonEmptyObject;
-  Value?: Array<string> | string;
-  WildCard?: string;
-  ShowFullPath?: string;
-  InitialPath?: string;
-  DialogTitle?: string;
-};
+function getNumberFromString(numberStr: string) {
+  let arrSymbols = numberStr.split('');
+  if (arrSymbols[0] == '-') {
+    let arrSymbolsSliced = arrSymbols.slice(1);
+    console.log('spliced', arrSymbolsSliced, arrSymbols, numberStr);
+    let numberInt = Number(arrSymbolsSliced.join());
+    if (!isNaN(numberInt)) {
+      return numberInt;
+    }
+  } else if (!isNaN(Number(numberStr))) {
+    return Number(numberStr);
+  } else {
+    throw new Error('invalid data type');
+  }
+}
 
 function getComponentFromPropElemData(data: PropertyType) {
   switch (data.Class) {
@@ -113,7 +115,6 @@ function getComponentFromPropElemData(data: PropertyType) {
       return DirProperty((str: string) => console.log(str));
     }
     case 'wxFileProperty': {
-      console.log(data.Attribute && Array.isArray(data.Attribute), 'FILE');
       if (data.Attribute && Array.isArray(data.Attribute)) {
         let ShowFullPathValue: string = data.Attribute[0].text;
         let DialogTitleValue: string = data.Attribute[1].text;
@@ -130,28 +131,107 @@ function getComponentFromPropElemData(data: PropertyType) {
         throw new Error('wxFileProperty - не верно переданные данные');
       }
     }
+    case 'wxIntProperty': {
+      if (Array.isArray(data.Attribute) && typeof data.Value == 'string') {
+        let arrAttributesValues = data.Attribute.map((attributeObj) => attributeObj.text);
+        let [maxValueStr, minValueStr, Units, InlineHelp] = arrAttributesValues;
+        let [maxValueInt, minValueInt, ValueInt] = [maxValueStr, minValueStr, data.Value].map((elem) =>
+          getNumberFromString(elem)
+        );
+        if (typeof maxValueInt == 'number' && typeof minValueInt == 'number' && typeof ValueInt == 'number') {
+          return IntProperty({
+            ...data,
+            maxValue: maxValueInt,
+            minValue: minValueInt,
+            InlineHelp: InlineHelp,
+            Units: Units,
+            Value: ValueInt,
+          });
+        } else {
+          throw new Error('wxIntProperty - не верно переданные данные');
+        }
+      } else {
+        throw new Error('wxIntProperty - не верно переданные данные');
+      }
+    }
+    case 'wxFloatProperty': {
+      if (Array.isArray(data.Attribute) && typeof data.Value == 'string') {
+        let arrAttributesValues = data.Attribute.map((attributeObj) => attributeObj.text);
+        let [maxValueStr, minValueStr, Units, InlineHelp, PrecisionStr] = arrAttributesValues;
+        let [maxValueInt, minValueInt, ValueInt, PrecisionInt] = [
+          maxValueStr,
+          minValueStr,
+          data.Value,
+          PrecisionStr,
+        ].map((elem) => getNumberFromString(elem));
+        if (
+          typeof maxValueInt == 'number' &&
+          typeof minValueInt == 'number' &&
+          typeof ValueInt == 'number' &&
+          typeof PrecisionInt == 'number'
+        ) {
+          return FloatProperty({
+            ...data,
+            maxValue: maxValueInt,
+            minValue: minValueInt,
+            InlineHelp,
+            Precision: PrecisionInt,
+            Units: Units,
+            Value: ValueInt,
+          });
+        } else {
+          throw new Error('wxFloatProperty - не верно переданные данные');
+        }
+      } else {
+        throw new Error('wxFloatProperty - не верно переданные данные');
+      }
+    }
+    case 'wxUIntProperty': {
+      if (Array.isArray(data.Attribute) && typeof data.Value == 'string') {
+        let arrAttributesValues = data.Attribute.map((attributeObj) => attributeObj.text);
+        let [ConditionVisible, maxValue, Units, InlineHelp, Base, Prefix] = arrAttributesValues;
+        let Value = data.Value;
+        if (typeof maxValue == 'string' && typeof Value == 'string' && Base && Prefix) {
+          return UIntProperty({
+            ...data,
+            maxValue,
+            InlineHelp,
+            Units: Units,
+            Value,
+            Base,
+            Prefix,
+            ConditionVisible,
+          });
+        } else {
+          throw new Error('wxFloatProperty - не верно переданные данные');
+        }
+      } else {
+        throw new Error('wxFloatProperty - не верно переданные данные');
+      }
+    }
     default:
       return null;
   }
 }
 
 export function PropertyGrid() {
+  //fetch запрос делаем условно, и у нас есть json
   const arrayProperties = useMemo(() => json.Modules.Module.Properties.Property, [json]);
+
+  const arrComponents = arrayProperties.map((property) => {
+    let propertyCategoryData = {
+      Class: property.Class,
+      Name: property.Name,
+      Label: property.Label,
+      children: property.Property.map((elem) => getComponentFromPropElemData(elem as PropertyType)),
+    };
+    return PropertyCategory(propertyCategoryData);
+  });
 
   return (
     <Box sx={{minWidth: 120}}>
       <FormControl fullWidth sx={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
-        {arrayProperties.map((property) => {
-          if (property && property.Class == 'wxPropertyCategory') {
-            let propertyCategoryData = {
-              Class: property.Class,
-              Name: property.Name,
-              Label: property.Label,
-              children: property.Property.map((elem) => getComponentFromPropElemData(elem as PropertyType)),
-            };
-            return PropertyCategory(propertyCategoryData);
-          }
-        })}
+        {arrComponents}
       </FormControl>
     </Box>
   );

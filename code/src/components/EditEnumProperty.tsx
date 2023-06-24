@@ -1,11 +1,10 @@
-import {useEffect} from 'react';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import type {NonEmptyObject} from '../types';
 
-type EditEnumPropertyProps = {
+export type EditEnumPropertyProps = {
   Choices: NonEmptyObject;
   Class: string;
   Label: string;
@@ -61,7 +60,7 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
       disablePortal
       id={Name}
       freeSolo
-      sx={{width: 300}}
+      sx={{width: '100%'}}
       onChange={(_, enumElem) => {
         if (typeof enumElem === 'string') {
           enumElem = {label: 'меткаN', value: enumElem};

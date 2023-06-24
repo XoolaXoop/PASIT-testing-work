@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import {useFormik} from 'formik';
 import {useEffect} from 'react';
 
-type StringPropertyProps = {
+export type StringPropertyProps = {
   Name: string;
   Label: string;
   Class: string;

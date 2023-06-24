@@ -1,5 +1,6 @@
 import {PropertyGrid} from './components/PropertyGrid';
+import {Container} from '@mui/material';
 
 export function App() {
-  return <PropertyGrid />;
+  return <Container>{PropertyGrid()}</Container>;
 }

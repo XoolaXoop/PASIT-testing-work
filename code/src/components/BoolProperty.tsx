@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import {useMemo} from 'react';
 import {Typography, Box} from '@mui/material';
 
-type BoolPropertyProps = {
+export type BoolPropertyProps = {
   Name: string;
   Label: string;
   Value: '0' | '1';

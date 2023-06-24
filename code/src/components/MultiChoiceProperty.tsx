@@ -44,12 +44,13 @@ export function MultiChoiceProperty(data: MultiChoicePropertyProps) {
   //TODO как убрать FormControl
   return (
     <div>
-      <FormControl sx={{m: 1, width: 300, padding: 0, margin: 0}}>
+      <FormControl fullWidth sx={{m: 1, width: '100%', padding: 0, margin: 0}}>
         <InputLabel id={`${Label}-checkbox`}>{Label}</InputLabel>
         <Select
           labelId={`${Label}-checkbox`}
           className={Class}
           name={Name}
+          fullWidth
           multiple
           value={formik.values[Name]}
           onChange={formik.handleChange}

@@ -2,7 +2,7 @@ import React from 'react';
 import Card from '@mui/material/Card';
 import {FormGroup, Typography} from '@mui/material';
 
-type PropertyCategoryProps = {
+export type PropertyCategoryProps = {
   Class: string;
   Name: string;
   Label: string;

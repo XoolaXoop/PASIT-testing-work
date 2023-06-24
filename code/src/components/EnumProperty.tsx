@@ -1,11 +1,11 @@
-import {useEffect, useMemo} from 'react';
+import {useMemo} from 'react';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import type {NonEmptyObject} from '../types';
 
-type EnumPropertyProps = {
+export type EnumPropertyProps = {
   Choices: NonEmptyObject;
   Class: string;
   Label: string;

@@ -1,15 +1,16 @@
 import React from 'react';
-import {Field, useFormik} from 'formik';
-import {TextField, Paper, InputLabel, FormControl, Typography} from '@mui/material';
+import {useFormik} from 'formik';
+import {FormControl, Typography} from '@mui/material';
 import {FC, ChangeEvent, InputHTMLAttributes} from 'react';
-interface FilePropertyProps {
+
+export type FilePropertyProps = {
   Name: string;
   Label: string;
   Wildcard: string;
   ShowFullPath: string;
   InitialPath: string;
   DialogTitle: string;
-}
+};
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   type: 'file';

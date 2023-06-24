@@ -3,7 +3,7 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import TextField from '@mui/material/TextField';
 
-type ArrayStringPropertyProps = {
+export type ArrayStringPropertyProps = {
   Attribute: {Name: 'Delimiter'; text: string};
   Class: string;
   Label: string;
