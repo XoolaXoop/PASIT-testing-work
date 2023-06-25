@@ -2,14 +2,15 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
-import {useMemo} from 'react';
+import {handleChangeDecorator} from '../helperFunc';
 import {Typography, Box} from '@mui/material';
+import {useEffect} from 'react';
 
 export type BoolPropertyProps = {
   Name: string;
   Label: string;
   Value: '0' | '1';
-  Class: string;
+  Class: 'wxBoolProperty';
 };
 
 export function BoolProperty(data: BoolPropertyProps) {
@@ -27,10 +28,13 @@ export function BoolProperty(data: BoolPropertyProps) {
         }),
     }),
   });
-
+  useEffect(() => {
+    localStorage.setItem(data.Name, data.Value);
+  }, []);
+  const handleChange = handleChangeDecorator({setFieldValue: formik.setFieldValue, fieldName: data.Name});
   return (
     <FormControlLabel
-      control={<Checkbox className={data.Class} name={data.Name} defaultChecked value={formik.values.BoolNumValue} />}
+      control={<Checkbox className={data.Class} name={data.Name} defaultChecked value={handleChange} />}
       label={
         <Box>
           <Typography variant='body1'>{data.Label}</Typography>

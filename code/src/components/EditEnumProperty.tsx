@@ -3,10 +3,11 @@ import * as yup from 'yup';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import type {NonEmptyObject} from '../types';
+import {useEffect} from 'react';
 
 export type EditEnumPropertyProps = {
   Choices: NonEmptyObject;
-  Class: string;
+  Class: 'wxEditEnumProperty';
   Label: string;
   Value: string;
   Name: string;
@@ -21,6 +22,7 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
       value: string;
     };
   };
+
   const formik = useFormik<FormValues>({
     initialValues: {
       [Name]: {
@@ -41,19 +43,25 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
         .required('Поле обязательно для заполения'),
     }),
   });
+
   type EditEnumType = {
     label: string;
     value: string;
   };
+
+  useEffect(() => {
+    localStorage.setItem(Name, Value);
+  }, []);
+
   const defaultProps = {
     options: Object.keys(Choices).map((key) => ({
       label: key,
       value: Choices[key],
     })),
     defaultValue: {label: initialValueLabel, value: Value},
-
     isOptionEqualToValue: (option: EditEnumType, selected: EditEnumType) => option.value === selected.value,
   };
+
   return (
     <Autocomplete
       {...defaultProps}
@@ -65,6 +73,7 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
         if (typeof enumElem === 'string') {
           enumElem = {label: 'меткаN', value: enumElem};
         }
+        localStorage.setItem(Name, String(enumElem));
         formik.setFieldValue(Name, enumElem);
       }}
       renderInput={(params) => (

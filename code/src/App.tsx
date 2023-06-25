@@ -1,6 +1,10 @@
 import {PropertyGrid} from './components/PropertyGrid';
-import {Container} from '@mui/material';
+import {Box} from '@mui/material';
 
 export function App() {
-  return <Container>{PropertyGrid()}</Container>;
+  return (
+    <Box sx={{padding: '20px'}}>
+      <PropertyGrid />
+    </Box>
+  );
 }

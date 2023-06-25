@@ -1,12 +1,14 @@
 import {ChangeEvent, InputHTMLAttributes} from 'react';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
+import {handleChangeDecorator} from '../helperFunc';
+import {useEffect} from 'react';
 
 export type FloatPropertyProps = InputHTMLAttributes<HTMLInputElement> & {
   Value: number;
   Name: string;
   Label: string;
-  Class: string;
+  Class: 'wxFloatProperty';
   Precision: number;
   maxValue: number;
   minValue: number;
@@ -32,15 +34,21 @@ export const FloatProperty = (data: FloatPropertyProps) => {
     }),
   });
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    let valueFloat = parseFloat(event.target.value);
-    if (isNaN(valueFloat)) {
-      throw new Error('Не верно введены данные!');
-    } else {
-      formik.setFieldValue(data.Name, valueFloat);
-    }
-  };
-
+  const handleChange = handleChangeDecorator({
+    handleChange: (event: ChangeEvent<HTMLInputElement>) => {
+      let valueFloat = parseFloat(event.target.value);
+      if (isNaN(valueFloat)) {
+        throw new Error('Не верно введены данные!');
+      } else {
+        formik.setFieldValue(data.Name, valueFloat);
+      }
+      return String(valueFloat);
+    },
+    fieldName: data.Name,
+  });
+  useEffect(() => {
+    localStorage.setItem(data.Name, String(data.Value));
+  }, []);
   return (
     <>
       <input

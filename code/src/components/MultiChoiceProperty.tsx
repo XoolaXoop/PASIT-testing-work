@@ -9,6 +9,7 @@ import {useMemo} from 'react';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import type {NonEmptyObject} from '../types';
+import {useEffect} from 'react';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -22,7 +23,7 @@ const MenuProps = {
 };
 
 export type MultiChoicePropertyProps = {
-  Class: string;
+  Class: 'wxMultiChoiceProperty';
   Name: string;
   Label: string;
   Value: Array<string>;
@@ -31,7 +32,9 @@ export type MultiChoicePropertyProps = {
 
 export function MultiChoiceProperty(data: MultiChoicePropertyProps) {
   let {Class, Name, Label, Value, Choices} = data;
+
   const arrayChoices = useMemo(() => Object.entries(Choices), [Choices]);
+
   const formik = useFormik({
     initialValues: {
       [Name]: Value,
@@ -42,29 +45,30 @@ export function MultiChoiceProperty(data: MultiChoicePropertyProps) {
     }),
   });
   //TODO как убрать FormControl
+  useEffect(() => {
+    localStorage.setItem(Name, Value.join(', '));
+  }, []);
   return (
-    <div>
-      <FormControl fullWidth sx={{m: 1, width: '100%', padding: 0, margin: 0}}>
-        <InputLabel id={`${Label}-checkbox`}>{Label}</InputLabel>
-        <Select
-          labelId={`${Label}-checkbox`}
-          className={Class}
-          name={Name}
-          fullWidth
-          multiple
-          value={formik.values[Name]}
-          onChange={formik.handleChange}
-          input={<OutlinedInput label='Tag' />}
-          renderValue={(selected) => selected.join(', ')}
-          MenuProps={MenuProps}>
-          {arrayChoices.map(([value, key]) => (
-            <MenuItem key={key} value={value}>
-              <Checkbox checked={formik.values[Name].indexOf(value) > -1} />
-              <ListItemText primary={value} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl fullWidth sx={{m: 1, width: '100%', padding: 0, margin: 0}}>
+      <InputLabel id={`${Label}-checkbox`}>{Label}</InputLabel>
+      <Select
+        labelId={`${Label}-checkbox`}
+        className={Class}
+        name={Name}
+        fullWidth
+        multiple
+        value={formik.values[Name]}
+        onChange={formik.handleChange}
+        input={<OutlinedInput label='Tag' />}
+        renderValue={(selected) => selected.join(', ')}
+        MenuProps={MenuProps}>
+        {arrayChoices.map(([value, key]) => (
+          <MenuItem key={key} value={value}>
+            <Checkbox checked={formik.values[Name].indexOf(value) > -1} />
+            <ListItemText primary={value} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }

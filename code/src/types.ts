@@ -11,23 +11,36 @@ import type {MultiChoicePropertyProps} from './components/MultiChoiceProperty';
 import type {StringPropertyProps} from './components/StringProperty';
 import type {UIntPropertyProps} from './components/UIntProperty';
 export type NonEmptyObject = Record<keyof any, any> & {[Symbol.iterator]: any};
+import {MultiChoiceProperty} from './components/MultiChoiceProperty';
 
-export type PropertyType = {
-  Property?: Array<PropertyType>;
-  Class: string;
-  Name: string;
-  Label: string;
-  Help?: string;
-  Attribute?: NonEmptyObject | Array<NonEmptyObject>;
-  Min: string;
-  Max: string;
-  Units: string;
-  Choices?: NonEmptyObject;
-  Value?: Array<string> | string;
-  WildCard?: string;
-  ShowFullPath?: string;
-  InitialPath?: string;
-  DialogTitle?: string;
-  InlineHelp?: string;
-  children?: Array<ReactNode>;
-};
+export type PropertyType =
+  | ArrayStringPropertyProps
+  | BoolPropertyProps
+  | EditEnumPropertyProps
+  | EnumPropertyProps
+  | FilePropertyProps
+  | FloatPropertyProps
+  | IntPropertyProps
+  | MultiChoicePropertyProps
+  | StringPropertyProps
+  | UIntPropertyProps;
+
+// export type PropertyType = {
+//   Property?: Array<PropertyType>;
+//   Class: string;
+//   Name: string;
+//   Label: string;
+//   Help?: string;
+//   Attribute?: NonEmptyObject | Array<NonEmptyObject>;
+//   Min: string;
+//   Max: string;
+//   Units: string;
+//   Choices?: NonEmptyObject;
+//   Value?: Array<string> | string;
+//   WildCard?: string;
+//   ShowFullPath?: string;
+//   InitialPath?: string;
+//   DialogTitle?: string;
+//   InlineHelp?: string;
+//   children?: Array<ReactNode>;
+// };
