@@ -3,12 +3,11 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import type {NonEmptyObject} from '../types';
 import {handleChangeDecorator} from '../helperFunc';
 import {useEffect} from 'react';
 
 export type EnumPropertyProps = {
-  Choices: NonEmptyObject;
+  Choices: Record<string, string>;
   Class: 'wxEnumProperty';
   Label: string;
   Value: string;

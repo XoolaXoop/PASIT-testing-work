@@ -2,7 +2,8 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {TextField} from '@mui/material';
 import {handleChangeDecorator} from '../helperFunc';
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
+import {evaluateExpression} from '../helperFunc';
 
 export type UIntPropertyProps = {
   Attribute: [
@@ -19,14 +20,18 @@ export type UIntPropertyProps = {
   Value: string;
   InlineHelp: string;
 };
-//TODO srgConditionVisible?
+
 //TODO Prefix?
+
 export function UIntProperty(data: UIntPropertyProps) {
   let [srgConditionVisible, maxValue, Units, InlineHelp, Base, Prefix] = data.Attribute.map((elem) => elem.text);
+  let [isVisible, setIsVisible] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       [data.Name]: data.Value,
     },
+
     validationSchema: yup.object({
       [data.Name]: yup
         .string()
@@ -60,40 +65,40 @@ export function UIntProperty(data: UIntPropertyProps) {
     },
   });
 
-  //TODO: setField или handleChange ниже
-  // function handleChange(event: ChangeEvent<HTMLInputElement>) {
-  //   let eventTargetVal = event.target.value;
-  //   if (data.Base == 'PG_BASE_DEC') {
-  //     let intValue = Number(eventTargetVal);
-  //     if (isNaN(intValue)) {
-  //       throw Error('Не верно введенные данные!');
-  //     } else {
-  //       formik.setFieldValue(data.Name, intValue);
-  //     }
-  //   } else if (data.Base == 'PG_BASE_HEX') {
-  //     let hexValue = parseInt(eventTargetVal, 16);
-  //     formik.setFieldValue(data.Name, hexValue);
-  //   } else if (data.Base == 'PG_BASE_OCT') {
-  //     let octValue = parseInt(eventTargetVal, 8);
-  //     console.log(octValue);
-  //     formik.setFieldValue(data.Name, octValue);
-  //   }
-  // }
   const handleChange = handleChangeDecorator({setFieldValue: formik.setFieldValue, fieldName: data.Name});
+
+  const formatValue = (value: string) => {
+    if (Prefix === 'PG_PREFIX_NONE') {
+      return value;
+    } else if (Prefix === 'PG_PREFIX_0x' && !value.startsWith('0x')) {
+      return `0x${value}`;
+    } else {
+      return value;
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem(data.Name, data.Value);
-  },[]);
+    let conditionVisibleRes = evaluateExpression(srgConditionVisible);
+    console.log(conditionVisibleRes, 'conditionVisibleRes');
+    setIsVisible(conditionVisibleRes);
+  });
+
   return (
-    <TextField
-      placeholder={InlineHelp}
-      className={data.Class}
-      fullWidth
-      name={data.Name}
-      value={formik.values[data.Name]}
-      label={data.Label + ' ' + Units}
-      onChange={handleChange}
-      error={formik.dirty && Boolean(formik.errors[data.Name])}
-      helperText={data.InlineHelp}
-    />
+    <>
+      {isVisible ? (
+        <TextField
+          placeholder={InlineHelp}
+          className={data.Class}
+          fullWidth
+          type='text'
+          name={data.Name}
+          value={formatValue(formik.values[data.Name])}
+          label={data.Label + ' ' + Units}
+          onChange={handleChange}
+          error={formik.dirty && Boolean(formik.errors[data.Name])}
+          helperText={data.InlineHelp}
+        />
+      ) : null}
+    </>
   );
 }

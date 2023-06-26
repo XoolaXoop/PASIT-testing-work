@@ -3,34 +3,63 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {handleChangeDecorator} from '../helperFunc';
 import {useEffect} from 'react';
+import {TextField} from '@mui/material';
+import {getNumberFromString} from '../helperFunc';
 
 export type FloatPropertyProps = InputHTMLAttributes<HTMLInputElement> & {
   Value: number;
   Name: string;
   Label: string;
   Class: 'wxFloatProperty';
-  Precision: number;
-  maxValue: number;
-  minValue: number;
-  Units: string;
-  InlineHelp: string;
+  Attribute: [
+    {
+      Name: 'Max';
+      text: string;
+    },
+    {
+      Name: 'Min';
+      text: string;
+    },
+    {
+      Name: 'Units';
+      text: string;
+    },
+    {
+      Name: 'InlineHelp';
+      text: string;
+    },
+    {
+      Name: 'Precision';
+      text: string;
+    }
+  ];
 };
 
-//TODO: inlineHelp
+export const FloatProperty = ({Value, Name, Label, Class, Attribute}: FloatPropertyProps) => {
+  let [maxValueString, minValueString, Units, InlineHelp, PrecisionString] = Attribute.map((elem) => elem.text);
+  let [maxValue, minValue] = [maxValueString, minValueString].map((elem) => {
+    let intValue = getNumberFromString(elem);
+    if (!intValue) {
+      throw Error('FloatProperty - invalid data');
+    }
+    return intValue;
+  });
 
-export const FloatProperty = (data: FloatPropertyProps) => {
+  let stepValue;
+  if (PrecisionString && !isNaN(parseFloat(PrecisionString))) {
+    const precision = parseFloat(PrecisionString);
+    stepValue = Math.pow(10, -precision).toString();
+  } else {
+    stepValue = '1';
+  }
+
   const formik = useFormik({
     initialValues: {
-      [data.Name]: data.Value,
+      [Name]: Value,
     },
     onSubmit: () => {},
     validationSchema: yup.object({
-      [data.Name]: yup
-        .number()
-        .min(data.minValue)
-        .max(data.maxValue)
-        .typeError(`Введите число > ${data.minValue} и < ${data.maxValue}`)
-        .required('Поле обязательно для заполения'),
+      [Name]: yup.number().max(maxValue).min(minValue).required('Поле обязательно для заполения'),
     }),
   });
 
@@ -40,26 +69,30 @@ export const FloatProperty = (data: FloatPropertyProps) => {
       if (isNaN(valueFloat)) {
         throw new Error('Не верно введены данные!');
       } else {
-        formik.setFieldValue(data.Name, valueFloat);
+        formik.setFieldValue(Name, valueFloat);
       }
       return String(valueFloat);
     },
-    fieldName: data.Name,
+    fieldName: Name,
   });
   useEffect(() => {
-    localStorage.setItem(data.Name, String(data.Value));
+    localStorage.setItem(Name, String(Value));
   }, []);
   return (
-    <>
-      <input
-        type='number'
-        value={formik.values[data.Name]}
-        max={data.maxValue}
-        min={data.minValue}
-        step={data.Precision >= 0 ? Math.pow(10, -data.Precision) : undefined}
-        onChange={handleChange}
-      />
-      <span>{data.Units}</span>
-    </>
+    <TextField
+      type='number'
+      className={Class}
+      fullWidth
+      placeholder={InlineHelp}
+      name={Name}
+      inputProps={{
+        step: stepValue,
+      }}
+      value={formik.values[Name]}
+      label={Label + ' ' + Units}
+      onChange={handleChange}
+      error={formik.dirty && Boolean(formik.errors[Name])}
+      helperText={formik.dirty && formik.errors[Name]}
+    />
   );
 };

@@ -1,23 +1,18 @@
-import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
-import json from '../../../base2JSON.json';
 import {ArrayStringProperty} from './ArrayStringProperty';
 import {BoolProperty} from './BoolProperty';
-import {DirProperty} from './DirProperty';
 import {EditEnumProperty} from './EditEnumProperty';
 import {EnumProperty} from './EnumProperty';
 import {FileProperty} from './FileProperty';
-import {FlagsProperty} from './FlagsProperty';
 import {FloatProperty} from './FloatProperty';
 import {IntProperty} from './IntProperty';
 import {MultiChoiceProperty} from './MultiChoiceProperty';
 import {PropertyCategory} from './PropertyCategory';
 import {StringProperty} from './StringProperty';
 import {UIntProperty} from './UIntProperty';
-import type {PropertyType} from '../types';
-import {useMemo} from 'react';
-
-
+import type {PropertyCategoryProps, PropertyType} from '../types';
+import {useMemo, useEffect} from 'react';
+import {FlagsProperty} from './FlagsProperty';
 
 function getComponentFromPropElemData(data: PropertyType) {
   if ('Class' in data && data.Class) {
@@ -25,15 +20,9 @@ function getComponentFromPropElemData(data: PropertyType) {
       case 'wxMultiChoiceProperty': {
         return MultiChoiceProperty(data);
       }
-      //TODO Поправить компонент FLagsProperty
-      // case 'wxFlagsProperty': {
-      //   return FlagsProperty(data);
-      //   if (typeof data.Choices == 'object' && Array.isArray(data.Value)) {
-      //     return FlagsProperty({...data, Value: data.Value, Choices: data.Choices});
-      //   } else {
-      //     throw new Error('FlagsProperty - не верно переданные данные');
-      //   }
-      // }
+      case 'wxFlagsProperty': {
+        return FlagsProperty(data);
+      }
       case 'wxArrayStringProperty': {
         return ArrayStringProperty(data);
       }
@@ -49,14 +38,10 @@ function getComponentFromPropElemData(data: PropertyType) {
       case 'wxStringProperty': {
         return StringProperty(data);
       }
-      // case 'wxDirProperty': {
-      //   return DirProperty((str: string) => console.log(str));
-      // }
       case 'wxFileProperty': {
         return FileProperty(data);
       }
       case 'wxIntProperty': {
-        console.log(data);
         return IntProperty(data);
       }
       case 'wxFloatProperty': {
@@ -70,20 +55,66 @@ function getComponentFromPropElemData(data: PropertyType) {
     }
   }
 }
+const arrayPropertiesNames: Array<string> = [];
 
-export function PropertyGrid() {
-  //fetch запрос делаем условно, и у нас есть json
-  const arrayProperties = useMemo(() => json.Modules.Module.Properties.Property, [json]);
+export function PropertyGrid(inComingJSON: string) {
+  const json = JSON.parse(inComingJSON);
+  const arrayProperties: Array<PropertyCategoryProps> = useMemo(() => json.Modules.Module.Properties.Property, [json]);
 
   const arrComponents = arrayProperties.map((property) => {
-    let propertyCategoryData = {
-      Class: property.Class,
-      Name: property.Name,
-      Label: property.Label,
-      children: property.Property.map((elem) => getComponentFromPropElemData(elem as PropertyType)),
-    };
-    return PropertyCategory(propertyCategoryData);
+    if (property.Class == 'wxPropertyCategory' && property.Property) {
+      let propertyCategoryData = {
+        Class: property.Class,
+        Name: property.Name,
+        Label: property.Label,
+        Property: property.Property,
+        children: property.Property.map((elem) => {
+          arrayPropertiesNames.push(elem.Name);
+          return getComponentFromPropElemData(elem as PropertyType);
+        }),
+        arrayPropertiesNames,
+      };
+      arrayPropertiesNames.push(property.Name);
+
+      return PropertyCategory(propertyCategoryData);
+    } else {
+      return null;
+    }
   });
+
+  function getValues() {
+    return arrayPropertiesNames.reduce((prev: Record<string, string | Array<string>>, cur: string) => {
+      let localStorageValue = localStorage.getItem(cur);
+      if (localStorageValue) {
+        if (cur == 'MultiChoiceName' || cur == 'FlagsName') {
+          prev[cur] = localStorageValue.split(',');
+        }
+        prev[cur] = localStorageValue;
+      }
+      return prev;
+    }, {});
+  }
+
+  function setValues(incomingJson: string, valuesObject: Record<string, string | string[]>) {
+    const parsedJson = JSON.parse(incomingJson);
+    const newJson = JSON.parse(JSON.stringify(parsedJson));
+    newJson.Modules.Module.Properties.Property.forEach((property: any) => {
+      property.Property.forEach((prop: any) => {
+        if (valuesObject.hasOwnProperty(prop.Name)) {
+          if (Array.isArray(valuesObject[prop.Name])) {
+            prop.value = JSON.stringify(valuesObject[prop.Name]);
+          }
+          prop.Value = valuesObject[prop.Name];
+        }
+      });
+    });
+    const newJsonString = JSON.stringify(newJson, null, 2);
+    return newJsonString;
+  }
+
+  useEffect(() => {
+    alert(setValues(inComingJSON, getValues()));
+  }, []);
 
   return <FormControl sx={{display: 'flex', flexDirection: 'column', gap: '20px'}}>{arrComponents}</FormControl>;
 }

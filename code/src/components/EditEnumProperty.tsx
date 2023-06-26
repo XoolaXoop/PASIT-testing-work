@@ -2,11 +2,10 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import type {NonEmptyObject} from '../types';
 import {useEffect} from 'react';
 
 export type EditEnumPropertyProps = {
-  Choices: NonEmptyObject;
+  Choices: Record<string, string>;
   Class: 'wxEditEnumProperty';
   Label: string;
   Value: string;
@@ -16,6 +15,7 @@ export type EditEnumPropertyProps = {
 export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumPropertyProps) {
   const initialValueLabel =
     Object.keys(Choices)[Object.values(Choices).findIndex((choiceValue) => choiceValue == Value)];
+
   type FormValues = {
     [Name: string]: {
       label: string;
@@ -38,7 +38,7 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
         .test(
           'is Valid',
           'is not Valid',
-          (value) => Object.values(Choices).find((choicesValue) => choicesValue == value) > -1
+          (value) => Object.values(Choices).findIndex((choicesValue) => choicesValue == value) > -1
         )
         .required('Поле обязательно для заполения'),
     }),
@@ -68,6 +68,7 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
       disablePortal
       id={Name}
       freeSolo
+      
       sx={{width: '100%'}}
       onChange={(_, enumElem) => {
         if (typeof enumElem === 'string') {
@@ -80,6 +81,7 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
         <TextField
           {...params}
           error={formik.dirty && Boolean(formik.errors[Name])}
+          helperText={formik.dirty && Boolean(formik.errors[Name])}
           name={Name}
           className={Class}
           label={Label}
@@ -88,5 +90,4 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
     />
   );
 }
-//
-//TODO helperText={formik.dirty && formik.errors[Name]}
+

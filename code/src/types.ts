@@ -10,8 +10,9 @@ import type {IntPropertyProps} from './components/IntProperty';
 import type {MultiChoicePropertyProps} from './components/MultiChoiceProperty';
 import type {StringPropertyProps} from './components/StringProperty';
 import type {UIntPropertyProps} from './components/UIntProperty';
+import type {PropertyCategoryProps} from './components/PropertyCategory';
+import type {FlagsPropertyProps} from './components/FlagsProperty';
 export type NonEmptyObject = Record<keyof any, any> & {[Symbol.iterator]: any};
-import {MultiChoiceProperty} from './components/MultiChoiceProperty';
 
 export type PropertyType =
   | ArrayStringPropertyProps
@@ -23,7 +24,9 @@ export type PropertyType =
   | IntPropertyProps
   | MultiChoicePropertyProps
   | StringPropertyProps
-  | UIntPropertyProps;
+  | UIntPropertyProps
+  | PropertyCategoryProps
+  | FlagsPropertyProps;
 
 // export type PropertyType = {
 //   Property?: Array<PropertyType>;

@@ -62,6 +62,7 @@ export function IntProperty(data: IntPropertyProps) {
   }, []);
   return (
     <TextField
+      type='number'
       className={data.Class}
       fullWidth
       placeholder={InlineHelp}

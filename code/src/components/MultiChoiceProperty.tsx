@@ -8,7 +8,6 @@ import Checkbox from '@mui/material/Checkbox';
 import {useMemo} from 'react';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
-import type {NonEmptyObject} from '../types';
 import {useEffect} from 'react';
 
 const ITEM_HEIGHT = 48;
@@ -27,7 +26,7 @@ export type MultiChoicePropertyProps = {
   Name: string;
   Label: string;
   Value: Array<string>;
-  Choices: NonEmptyObject;
+  Choices: Record<string, string>;
 };
 
 export function MultiChoiceProperty(data: MultiChoicePropertyProps) {

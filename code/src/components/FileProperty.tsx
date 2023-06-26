@@ -1,18 +1,35 @@
 import type {ChangeEvent} from 'react';
 import {useFormik} from 'formik';
-import {FormControl, Typography} from '@mui/material';
+import {Box, Typography, TextField, Button} from '@mui/material';
 import {FC, InputHTMLAttributes} from 'react';
 import {handleChangeDecorator} from '../helperFunc';
 import {useEffect} from 'react';
+import * as yup from 'yup';
 
 export type FilePropertyProps = {
+  Attribute: [
+    {
+      Name: 'ShowFullPath';
+      text: string;
+    },
+    {
+      Name: 'DialogTitle';
+      text: string;
+    },
+    {
+      Name: 'Wildcard';
+      text: string;
+    },
+    {
+      Name: 'InitialPath';
+      text: string;
+    }
+  ];
+  Help: string;
   Name: string;
   Label: string;
-  Wildcard: string;
-  ShowFullPath: string;
   Class: 'wxFileProperty';
-  InitialPath: string;
-  DialogTitle: string;
+  Value: string;
 };
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
@@ -27,19 +44,28 @@ const FileInput: FC<Props> = ({type, id, onChange, accept, webkitdirectory, ...r
   return <input type={type} id={id} onChange={onChange} accept={accept} {...rest} />;
 };
 
-//TODO webkitdirectory={webkitdirectory} исправить https://stackoverflow.com/questions/63809230/reactjs-directory-selection-dialog-not-working
-
-export const FileProperty: React.FC<FilePropertyProps> = (data: FilePropertyProps) => {
-  let {Name, Label, Wildcard, ShowFullPath, InitialPath} = data;
+function getFileNameFromPath(path: string) {
+  const pathSegments = path.split('\\');
+  const fileName = pathSegments.pop();
+  if (!fileName) {
+    return '';
+  }
+  return fileName;
+}
+export const FileProperty: React.FC<FilePropertyProps> = ({Name, Label, Attribute, Value, Help}: FilePropertyProps) => {
+  let [ShowFullPath, DialogTitle, Wildcard, InitialPath] = Attribute.map((elem) => elem.text);
   const formik = useFormik({
     initialValues: {
-      [Name]: '',
+      [Name]: Value,
     },
     onSubmit: () => {},
+    validationSchema: yup.object({
+      [Name]: yup.string().required('Поле обязательно для заполения'),
+    }),
   });
   const handleChange = handleChangeDecorator({
     handleChange: (event: ChangeEvent<HTMLInputElement>) => {
-      const filePathString = ShowFullPath == '1' ? event.target.value : event.target.value.split('\\')[1];
+      const filePathString = ShowFullPath == '1' ? event.target.value : getFileNameFromPath(event.target.value);
       formik.setFieldValue(Name, filePathString);
       return filePathString;
     },
@@ -49,16 +75,36 @@ export const FileProperty: React.FC<FilePropertyProps> = (data: FilePropertyProp
     localStorage.setItem(Name, InitialPath);
   }, []);
   return (
-    <FormControl sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
-      <label htmlFor={Label + Name}>{Label}</label>
-      <FileInput
-        type='file'
-        id={Name}
-        onChange={handleChange ? handleChange : formik.handleChange}
-        accept={Wildcard}
-        webkitdirectory={InitialPath ? 'true' : undefined}
-      />
-      <Typography sx={{height: '20px', width: '100%'}}>{formik.values[Name]}</Typography>
-    </FormControl>
+    <Box sx={{display: 'flex', flexDirection: 'column', gap: '10px', padding: '10px'}}>
+      <Box sx={{display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'flex-start'}}>
+        <Typography variant='body1' fontSize={18}>
+          {Label}
+        </Typography>
+        <TextField
+          fullWidth
+          helperText={Help}
+          placeholder='d'
+          label='Selected File'
+          value={formik.values[Name]}
+          disabled
+        />
+      </Box>
+      <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <Typography variant='body1' fontSize={18}>
+          {DialogTitle}
+        </Typography>
+        <Button variant='contained' component='label'>
+          Выбрать файл
+          <FileInput
+            style={{display: 'none'}}
+            type='file'
+            id={'file-input-label' + Label}
+            onChange={handleChange ? handleChange : formik.handleChange}
+            accept={Wildcard}
+            webkitdirectory={InitialPath ? 'true' : undefined}
+          />
+        </Button>
+      </Box>
+    </Box>
   );
 };
