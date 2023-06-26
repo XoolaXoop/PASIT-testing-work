@@ -11,7 +11,7 @@ export type EditEnumPropertyProps = {
   Value: string;
   Name: string;
 };
-//TODO переделать FormValues = {label, value} в FormValues = {value}
+
 export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumPropertyProps) {
   const initialValueLabel =
     Object.keys(Choices)[Object.values(Choices).findIndex((choiceValue) => choiceValue == Value)];
@@ -68,7 +68,6 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
       disablePortal
       id={Name}
       freeSolo
-      
       sx={{width: '100%'}}
       onChange={(_, enumElem) => {
         if (typeof enumElem === 'string') {
@@ -90,4 +89,3 @@ export function EditEnumProperty({Value, Label, Class, Choices, Name}: EditEnumP
     />
   );
 }
-
