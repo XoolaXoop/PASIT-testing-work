@@ -1,4 +1,3 @@
-import {ReactNode} from 'react';
 export type {PropertyCategoryProps} from './components/PropertyCategory';
 import type {ArrayStringPropertyProps} from './components/ArrayStringProperty';
 import type {BoolPropertyProps} from './components/BoolProperty';
@@ -27,23 +26,3 @@ export type PropertyType =
   | UIntPropertyProps
   | PropertyCategoryProps
   | FlagsPropertyProps;
-
-// export type PropertyType = {
-//   Property?: Array<PropertyType>;
-//   Class: string;
-//   Name: string;
-//   Label: string;
-//   Help?: string;
-//   Attribute?: NonEmptyObject | Array<NonEmptyObject>;
-//   Min: string;
-//   Max: string;
-//   Units: string;
-//   Choices?: NonEmptyObject;
-//   Value?: Array<string> | string;
-//   WildCard?: string;
-//   ShowFullPath?: string;
-//   InitialPath?: string;
-//   DialogTitle?: string;
-//   InlineHelp?: string;
-//   children?: Array<ReactNode>;
-// };
