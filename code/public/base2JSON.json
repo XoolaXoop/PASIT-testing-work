@@ -1,0 +1,236 @@
+{
+  "Categories": {
+    "Category": {
+      "Name": "Анализаторы"
+    }
+  },
+  "Modules": {
+    "Module": {
+      "Properties": {
+        "Property": [
+          {
+            "Property": [
+              {
+                "Class": "wxStringProperty",
+                "Name": "Name",
+                "Label": "Имя",
+                "Help": "Отображаемое имя модуля.",
+                "Value": "Модуль"
+              },
+              {
+                "Class": "wxLongStringProperty",
+                "Name": "Description",
+                "Label": "Описание",
+                "Help": "Расширенное описание модуля.",
+                "Value": "Тестовый модуль"
+              },
+              {
+                "Attribute": [
+                  {
+                    "Name": "PickerStyle",
+                    "text": "2"
+                  },
+                  {
+                    "Name": "DateFormat",
+                    "text": "%y.%m.%d"
+                  }
+                ],
+                "Class": "wxDateProperty",
+                "Name": "Version",
+                "Label": "Версия",
+                "Help": "Версия модуля (дата релиза).",
+                "Value": "23.06.20"
+              },
+              {
+                "Attribute": [
+                  {
+                    "Name": "ShowFullPath",
+                    "text": "1"
+                  },
+                  {
+                    "Name": "DialogTitle",
+                    "text": "Выберите исполняемый файл."
+                  },
+                  {
+                    "Name": "Wildcard",
+                    "text": "Исполняемые файлы (*)|*"
+                  },
+                  {
+                    "Name": "InitialPath",
+                    "text": ":C"
+                  }
+                ],
+                "Class": "wxFileProperty",
+                "Name": "File",
+                "Label": "Файл",
+                "Help": "Исполняемый файл модуля.",
+                "Value": "module-exe"
+              }
+            ],
+            "Class": "wxPropertyCategory",
+            "Name": "System",
+            "Label": "Системные"
+          },
+          {
+            "Property": [
+              {
+                "Attribute": [
+                  {
+                    "Name": "Max",
+                    "text": "10"
+                  },
+                  {
+                    "Name": "Min",
+                    "text": "-1"
+                  },
+                  {
+                    "Name": "Units",
+                    "text": "единицы измерения"
+                  },
+                  {
+                    "Name": "InlineHelp",
+                    "text": "встроенная справка, когда пользователь еще ничего не ввел"
+                  }
+                ],
+                "Class": "wxIntProperty",
+                "Name": "IntName",
+                "Label": "IntLabel",
+                "Value": "0"
+              },
+              {
+                "Attribute": [
+                  {
+                    "Name": "Max",
+                    "text": "10"
+                  },
+                  {
+                    "Name": "Min",
+                    "text": "-1"
+                  },
+                  {
+                    "Name": "Units",
+                    "text": "единицы измерения"
+                  },
+                  {
+                    "Name": "InlineHelp",
+                    "text": "встроенная справка, когда пользователь еще ничего не ввел"
+                  },
+                  {
+                    "Name": "Precision",
+                    "text": "2"
+                  }
+                ],
+                "Class": "wxFloatProperty",
+                "Name": "FloatName",
+                "Label": "FloatLabel",
+                "Value": "0"
+              },
+              {
+                "Attribute": [
+                  {
+                    "Name": "srgConditionVisible",
+                    "text": "IntName==1"
+                  },
+                  {
+                    "Name": "Max",
+                    "text": "10"
+                  },
+                  {
+                    "Name": "Units",
+                    "text": "единицы измерения"
+                  },
+                  {
+                    "Name": "InlineHelp",
+                    "text": "встроенная справка, когда пользователь еще ничего не ввел"
+                  },
+                  {
+                    "Name": "Base",
+                    "text": "PG_BASE_OCT"
+                  },
+                  {
+                    "Name": "Prefix",
+                    "text": "PG_PREFIX_0x"
+                  }
+                ],
+                "Class": "wxUIntProperty",
+                "Name": "UIntName",
+                "Label": "UIntLabel",
+                "Value": "0"
+              },
+              {
+                "Attribute": {
+                  "Name": "Delimiter",
+                  "text": ","
+                },
+                "Class": "wxArrayStringProperty",
+                "Name": "ArrayStringName",
+                "Label": "ArrayStringLabel",
+                "Value": "ping, pong"
+              },
+              {
+                "Attribute": {
+                  "Name": "UseCheckbox",
+                  "text": "1"
+                },
+                "Class": "wxBoolProperty",
+                "Name": "BoolName",
+                "Label": "BoolLabel",
+                "Value": "0"
+              },
+              {
+                "Choices": {
+                  "метка1": "0x0",
+                  "метка2": "0x1"
+                },
+                "Class": "wxEnumProperty",
+                "Name": "EnumName",
+                "Label": "EnumLabel",
+                "Value": "метка1"
+              },
+              {
+                "Choices": {
+                  "\"метка1\"": "0x0",
+                  "\"метка2\"": "0x1"
+                },
+                "Class": "wxEditEnumProperty",
+                "Name": "EditEnumName",
+                "Label": "EditEnumLabel",
+                "Value": "0x0"
+              },
+              {
+                "Choices": {
+                  "\"метка1\"": "0x0",
+                  "\"метка2\"": "0x1",
+                  "\"метка3\"": "0x4"
+                },
+                "Class": "wxMultiChoiceProperty",
+                "Name": "MultiChoiceName",
+                "Label": "MultiChoiceLabel",
+                "Value": ["\"метка1\"", "\"метка2\""]
+              },
+              {
+                "Choices": {
+                  "\"Flag1\"": "0x1",
+                  "\"Flag2\"": "0x2",
+                  "\"Flag4\"": "0x4"
+                },
+                "Class": "wxFlagsProperty",
+                "Name": "FlagsName",
+                "Label": "FlagsLabel",
+                "Value": ["\"Flag1\"", "\"Flag4\""]
+              },
+              {
+                "Class": "wxDirProperty",
+                "Name": "DirName",
+                "Label": "DirLabel"
+              }
+            ],
+            "Class": "wxPropertyCategory",
+            "Name": "Custom",
+            "Label": "Дополнительные"
+          }
+        ]
+      }
+    }
+  }
+}

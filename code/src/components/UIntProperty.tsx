@@ -38,6 +38,9 @@ export function UIntProperty(data: UIntPropertyProps) {
         .test('Верно', 'Не верно введенное значение!!', (value) => {
           let parsedValue = 0;
           let parsedMaxValue = 0;
+          if (!value) {
+            return false;
+          }
           if (Base === 'PG_BASE_OCT') {
             parsedValue = parseInt(value, 8);
             parsedMaxValue = parseInt(maxValue, 8);
