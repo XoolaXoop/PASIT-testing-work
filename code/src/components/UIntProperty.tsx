@@ -21,8 +21,6 @@ export type UIntPropertyProps = {
   InlineHelp: string;
 };
 
-//TODO Prefix?
-
 export function UIntProperty(data: UIntPropertyProps) {
   let [srgConditionVisible, maxValue, Units, InlineHelp, Base, Prefix] = data.Attribute.map((elem) => elem.text);
   let [isVisible, setIsVisible] = useState(false);
