@@ -18,7 +18,6 @@ export type UIntPropertyProps = {
   Class: 'wxUIntProperty';
   Label: string;
   Value: string;
-  InlineHelp: string;
 };
 
 export function UIntProperty(data: UIntPropertyProps) {
@@ -35,7 +34,7 @@ export function UIntProperty(data: UIntPropertyProps) {
         .string()
         .matches(/^[0-9A-Fa-f]+$/, 'Не верно введенное значение')
         .required('Поле обязательно для заполнения')
-        .test('Верно', 'Не верно введенное значение!!', (value) => {
+        .test('Верно', 'Не верно введенное значение!', (value) => {
           let parsedValue = 0;
           let parsedMaxValue = 0;
           if (!value) {
@@ -97,7 +96,7 @@ export function UIntProperty(data: UIntPropertyProps) {
           label={data.Label + ' ' + Units}
           onChange={handleChange}
           error={formik.dirty && Boolean(formik.errors[data.Name])}
-          helperText={data.InlineHelp}
+          helperText={formik.dirty && formik.errors[data.Name]}
         />
       ) : null}
     </>

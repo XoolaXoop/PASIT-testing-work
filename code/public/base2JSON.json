@@ -149,7 +149,7 @@
                   },
                   {
                     "Name": "Prefix",
-                    "text": "PG_PREFIX_0x"
+                    "text": "PG_PREFIX_NONE"
                   }
                 ],
                 "Class": "wxUIntProperty",
