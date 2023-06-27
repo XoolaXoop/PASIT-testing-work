@@ -64,7 +64,9 @@ export function UIntProperty(data: UIntPropertyProps) {
       console.log('UIntProperty');
     },
   });
-
+  useEffect(() => {
+    localStorage.setItem(data.Name, data.Value);
+  }, []);
   const handleChange = handleChangeDecorator({setFieldValue: formik.setFieldValue, fieldName: data.Name});
 
   const formatValue = (value: string) => {
