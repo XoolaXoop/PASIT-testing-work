@@ -43,7 +43,7 @@ export function MultiChoiceProperty(data: MultiChoicePropertyProps) {
       choosedValues: yup.array().required('Поле обязательно для заполения'),
     }),
   });
-  //TODO как убрать FormControl
+
   useEffect(() => {
     localStorage.setItem(Name, Value.join(', '));
   }, []);
