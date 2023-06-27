@@ -1,5 +1,5 @@
 import {PropertyGrid} from './components/PropertyGrid';
-import {Button} from '@mui/material';
+import {Button, Paper} from '@mui/material';
 import {useState} from 'react';
 import {ErrorBoundary} from './ErrorBoundary';
 
@@ -34,8 +34,18 @@ export function App() {
     );
   }
   return (
-    <ErrorBoundary>
-      <DownloadJSONButton saveJSONData={setJSONData} />
-    </ErrorBoundary>
+    <Paper
+      sx={{
+        width: '300px',
+        height: '200px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <ErrorBoundary>
+        <DownloadJSONButton saveJSONData={setJSONData} />
+      </ErrorBoundary>
+    </Paper>
   );
 }
