@@ -95,9 +95,11 @@ export function PropertyGrid({inComingJSON}: {inComingJSON: string}) {
         let localStorageValue = localStorage.getItem(cur);
         if (localStorageValue) {
           if (cur == 'MultiChoiceName' || cur == 'FlagsName') {
-            prev[cur] = localStorageValue.split(',');
+            console.log('SPLIT');
+            prev[cur] = localStorageValue.split(', ');
+          } else {
+            prev[cur] = localStorageValue;
           }
-          prev[cur] = localStorageValue;
         }
         return prev;
       }, {});
@@ -110,8 +112,10 @@ export function PropertyGrid({inComingJSON}: {inComingJSON: string}) {
         property.Property.forEach((prop: any) => {
           if (valuesObject.hasOwnProperty(prop.Name)) {
             if (Array.isArray(valuesObject[prop.Name])) {
-              prop.value = JSON.stringify(valuesObject[prop.Name]);
+              console.log(valuesObject[prop.Name]);
+              prop.Value = JSON.stringify(valuesObject[prop.Name]);
             }
+            console.log(valuesObject[prop.Name]);
             prop.Value = valuesObject[prop.Name];
           }
         });

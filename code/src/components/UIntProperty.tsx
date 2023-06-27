@@ -81,7 +81,6 @@ export function UIntProperty(data: UIntPropertyProps) {
 
   useEffect(() => {
     let conditionVisibleRes = evaluateExpression(srgConditionVisible);
-    console.log(conditionVisibleRes, 'conditionVisibleRes');
     setIsVisible(conditionVisibleRes);
   });
 

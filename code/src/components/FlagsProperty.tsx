@@ -31,9 +31,7 @@ export function FlagsProperty({Value, Label, Class, Choices, Name}: FlagsPropert
   const arrayKeyValueChoices = useMemo(() => Object.entries(Choices), [Choices]);
 
   const initialValue = useMemo(() => {
-    return arrayKeyValueChoices
-      .filter(([key]) => Value.includes(key)) // Фильтрация выбранных флагов
-      .map(([_, value]) => value); // Получение значений выбранных флагов
+    return arrayKeyValueChoices.filter(([key]) => Value.includes(key)).map(([_, value]) => value);
   }, [Choices, Value]);
 
   const formik = useFormik({
@@ -54,11 +52,9 @@ export function FlagsProperty({Value, Label, Class, Choices, Name}: FlagsPropert
   };
 
   useEffect(() => {
-    const flagValues = formik.values[Name]; // Разделение значения флаговой комбинации
-    const flagKeys = arrayKeyValueChoices
-      .filter(([_, value]) => flagValues.includes(value)) // Фильтрация выбранных значений
-      .map(([key]) => key); // Получение ключей выбранных значений
-    const newValue = flagKeys.join(','); // Объединение ключей в новую флаговую комбинацию
+    const flagValues = formik.values[Name];
+    const flagKeys = arrayKeyValueChoices.filter(([_, value]) => flagValues.includes(value)).map(([key]) => key);
+    const newValue = flagKeys.join(', ');
     localStorage.setItem(Name, newValue);
   }, [formik.values[Name]]);
 

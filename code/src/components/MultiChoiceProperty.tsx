@@ -59,7 +59,7 @@ export function MultiChoiceProperty(data: MultiChoicePropertyProps) {
         value={formik.values[Name]}
         onChange={formik.handleChange}
         input={<OutlinedInput label='Tag' />}
-        renderValue={(selected) => selected.join(', ')}
+        renderValue={(selected) => selected.join(',')}
         MenuProps={MenuProps}>
         {arrayChoices.map(([value, key]) => (
           <MenuItem key={key} value={value}>
