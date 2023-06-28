@@ -56,6 +56,23 @@ function getComponentFromPropElemData(data: PropertyType) {
   }
 }
 
+function parseNumber(str: string) {
+  // Проверяем, начинается ли строка с префикса, указывающего на систему исчисления
+  if (str.startsWith('0x')) {
+    // Строка начинается с "0x", значит число представлено в шестнадцатеричной системе исчисления
+    return parseInt(str, 16);
+  } else if (str.startsWith('0b')) {
+    // Строка начинается с "0b", значит число представлено в двоичной системе исчисления
+    return parseInt(str.substr(2), 2);
+  } else if (str.startsWith('0o')) {
+    // Строка начинается с "0o", значит число представлено в восьмеричной системе исчисления
+    return parseInt(str.substr(2), 8);
+  } else {
+    // Если строка не начинается с указанных префиксов, считаем число в десятичной системе исчисления
+    return parseFloat(str);
+  }
+}
+
 const arrayPropertiesNames: Array<string> = [];
 
 export function PropertyGrid({inComingJSON}: {inComingJSON: string}) {
@@ -91,12 +108,17 @@ export function PropertyGrid({inComingJSON}: {inComingJSON: string}) {
     });
 
     function getValues() {
-      return arrayPropertiesNames.reduce((prev: Record<string, string | Array<string>>, cur: string) => {
+      return arrayPropertiesNames.reduce((prev: Record<string, string | Array<string> | number>, cur: string) => {
         let localStorageValue = localStorage.getItem(cur);
         if (localStorageValue) {
+          console.log(cur);
           if (cur == 'MultiChoiceName' || cur == 'FlagsName') {
-            console.log('SPLIT');
             prev[cur] = localStorageValue.split(', ');
+          } else if (cur == 'IntName' || cur == 'FloatName' || cur == 'BoolName') {
+            prev[cur] = Number(localStorageValue);
+          } else if (cur == 'UIntName') {
+            let num: number = parseInt(localStorageValue, 16);
+            prev[cur] = num;
           } else {
             prev[cur] = localStorageValue;
           }
@@ -105,29 +127,28 @@ export function PropertyGrid({inComingJSON}: {inComingJSON: string}) {
       }, {});
     }
 
-    function setValues(incomingJson: string, valuesObject: Record<string, string | string[]>) {
+    function setValues(incomingJson: string, valuesObject: Record<string, string | string[] | number>) {
       const parsedJson = JSON.parse(incomingJson);
       const newJson = JSON.parse(JSON.stringify(parsedJson));
       newJson.Modules.Module.Properties.Property.forEach((property: any) => {
         property.Property.forEach((prop: any) => {
           if (valuesObject.hasOwnProperty(prop.Name)) {
             if (Array.isArray(valuesObject[prop.Name])) {
-              console.log(valuesObject[prop.Name]);
               prop.Value = JSON.stringify(valuesObject[prop.Name]);
             }
-            console.log(valuesObject[prop.Name]);
+
             prop.Value = valuesObject[prop.Name];
           }
         });
       });
       const newJsonString = JSON.stringify(newJson, null, 2);
+      console.log(JSON.parse(newJsonString));
       return newJsonString;
     }
 
     const handleExportData = () => {
       const newJSONString = setValues(inComingJSON, getValues());
       const blob = new Blob([newJSONString], {type: 'application/json'});
-
       saveAs(blob, 'exportedData.json');
     };
 

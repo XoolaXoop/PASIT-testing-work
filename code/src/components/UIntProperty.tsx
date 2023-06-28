@@ -32,7 +32,7 @@ export function UIntProperty(data: UIntPropertyProps) {
     validationSchema: yup.object({
       [data.Name]: yup
         .string()
-        .matches(/^[0-9A-Fa-f]+$/, 'Не верно введенное значение')
+        .matches(/^[0-9A-Fa-fx]+$/, 'Не верно введенное значение!!')
         .required('Поле обязательно для заполнения')
         .test('Верно', 'Не верно введенное значение!', (value) => {
           let parsedValue = 0;
@@ -47,13 +47,14 @@ export function UIntProperty(data: UIntPropertyProps) {
             parsedValue = parseInt(maxValue, 10);
             parsedMaxValue = parseInt(maxValue, 10);
           } else if (Base === 'PG_BASE_HEX') {
+            console.log(value, 'HERE', parseInt(value, 16), parseInt(maxValue, 16));
             parsedValue = parseInt(value, 16);
             parsedMaxValue = parseInt(maxValue, 16);
           }
           if (!parsedValue) {
             return false;
           } else {
-            if (parsedValue < parsedMaxValue) {
+            if (0 < parsedValue && parsedValue < parsedMaxValue) {
               return true;
             }
             return false;

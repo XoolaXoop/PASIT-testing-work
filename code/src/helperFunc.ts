@@ -1,7 +1,7 @@
 import {ChangeEvent} from 'react';
 import {FormikErrors} from 'formik';
 
-type handleChangeTypeFunc = (event: ChangeEvent<HTMLInputElement>) => string;
+type handleChangeTypeFunc = (event: ChangeEvent<HTMLInputElement>) => any;
 type setFieldValueTypeFunc = (
   field: string,
   value: any,
@@ -28,7 +28,6 @@ const handleChangeDecorator = ({handleChange, setFieldValue, fieldName}: handleC
   } else if (setFieldValue) {
     return (event: ChangeEvent<HTMLInputElement>) => {
       let eventTargetValue = event.target.value;
-      console.log('here', eventTargetValue);
       setFieldValue(fieldName, eventTargetValue);
       localStorage.setItem(fieldName, eventTargetValue);
     };

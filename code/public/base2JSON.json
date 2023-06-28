@@ -145,11 +145,11 @@
                   },
                   {
                     "Name": "Base",
-                    "text": "PG_BASE_OCT"
+                    "text": "PG_BASE_HEX"
                   },
                   {
                     "Name": "Prefix",
-                    "text": "PG_PREFIX_NONE"
+                    "text": "PG_PREFIX_0x"
                   }
                 ],
                 "Class": "wxUIntProperty",

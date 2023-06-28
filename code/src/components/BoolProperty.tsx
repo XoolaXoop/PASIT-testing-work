@@ -37,10 +37,10 @@ export function BoolProperty({Value, Name, Label, Class}: BoolPropertyProps) {
     handleChange: (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
         formik.setFieldValue(Name, '1');
-        return '1';
+        return 1;
       } else {
         formik.setFieldValue(Name, '0');
-        return '0';
+        return 0;
       }
     },
     fieldName: Name,
